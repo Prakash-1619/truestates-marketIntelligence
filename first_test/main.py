@@ -3,6 +3,8 @@ import pandas as pd
 import pickle
 import numpy as np
 import plotly.graph_objects as go
+import os
+
 
 # -------------------------------
 # PAGE CONFIG (MUST BE FIRST)
@@ -19,6 +21,8 @@ tab = st.sidebar.radio( "Zone", ["Yas Island", "Dubai South"])
 # Tab 1
 
 # -------------------------------
+#BASE_DIR = os.path.dirname(os.path.abspath('first_test/'))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 if tab == "Yas Island":
     # -------------------------------
@@ -27,27 +31,39 @@ if tab == "Yas Island":
     AREA_NAME = "Al Khairan First"
     MACRO_NEWS_FACTOR = 1.045
     
+    
     # -------------------------------
     # LOAD ASSETS
     # -------------------------------
     @st.cache_resource
     def load_model():
-        with open("rf_model_Al Khairan First.pkl", "rb") as f:
+        model_path = os.path.join(BASE_DIR, "rf_model_Al Khairan First.pkl")
+        with open(model_path, "rb") as f:
             return pickle.load(f)
     
     @st.cache_resource
     def load_columns():
-        with open("trained_columns_Al Khairan First.pkl", "rb") as f:
+        col_path = os.path.join(BASE_DIR, "trained_columns_Al Khairan First.pkl")
+        with open(col_path, "rb") as f:
             return pickle.load(f)
+    
     
     model = load_model()
     training_columns = load_columns()
     
-    growth_df = pd.read_csv("Sarima_forecast_6M.csv")
+    growth_df = pd.read_csv(
+        os.path.join(BASE_DIR, "Sarima_forecast_6M.csv")
+    )
+    
+    historical_df = pd.read_csv(
+        os.path.join(BASE_DIR, "historical_df.csv")
+    )
+    
+    #growth_df = pd.read_csv("Sarima_forecast_6M.csv")
     growth_df = growth_df[growth_df["area_name_en"] == AREA_NAME]
     growth_df["month"] = pd.to_datetime(growth_df["month"])
     
-    historical_df = pd.read_csv("historical_df.csv")
+    #historical_df = pd.read_csv("historical_df.csv")
     historical_df = historical_df[historical_df["area_name_en"] == AREA_NAME]
     historical_df["month"] = pd.to_datetime(historical_df["month"])
     
@@ -282,34 +298,42 @@ if tab == "Yas Island":
             })
         )
 
-if tab == "Yas Island":
+
+
+
+
+if tab == "Dubai South":
     # -------------------------------
     # CONFIG
     # -------------------------------
     AREA_NAME = "Jabal Ali First"
     MACRO_NEWS_FACTOR = 1.077
     
-    # -------------------------------
-    # LOAD ASSETS
-    # -------------------------------
     @st.cache_resource
     def load_model():
-        with open("rf_model_Jabal Ali First.pkl", "rb") as f:
+        model_path = os.path.join(BASE_DIR, "rf_model_Jabal Ali First.pkl")
+        with open(model_path, "rb") as f:
             return pickle.load(f)
     
     @st.cache_resource
     def load_columns():
-        with open("trained_columns_Jabal Ali First.pkl", "rb") as f:
+        col_path = os.path.join(BASE_DIR, "trained_columns_Jabal Ali First.pkl")
+        with open(col_path, "rb") as f:
             return pickle.load(f)
+    
     
     model = load_model()
     training_columns = load_columns()
     
-    growth_df = pd.read_csv("Sarima_forecast_6M.csv")
+    growth_df = pd.read_csv(os.path.join(BASE_DIR, "Sarima_forecast_6M.csv"))
+    historical_df = pd.read_csv(os.path.join(BASE_DIR, "historical_df.csv"))
+    
+    
+    #growth_df = pd.read_csv("Sarima_forecast_6M.csv")
     growth_df = growth_df[growth_df["area_name_en"] == AREA_NAME]
     growth_df["month"] = pd.to_datetime(growth_df["month"])
     
-    historical_df = pd.read_csv("historical_df.csv")
+    #historical_df = pd.read_csv("historical_df.csv")
     historical_df = historical_df[historical_df["area_name_en"] == AREA_NAME]
     historical_df["month"] = pd.to_datetime(historical_df["month"])
     
